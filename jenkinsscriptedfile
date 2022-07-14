@@ -1,0 +1,37 @@
+node {
+    
+    def mavenHome = tool name : 'maven3.8.6'
+    
+    stage('fetching code from github') {
+        
+        git branch: 'development', credentialsId: '1dfbc4b8-0a76-4d21-9901-35a6a63d22a0', url: 'https://github.com/MBUK9493/maven-web-application.git'
+        
+    }
+    
+    stage('maven') {
+        
+        sh " $mavenHome/bin/mvn clean package "
+        
+    }
+    
+    stage('sonarqube') {
+        
+        sh " $mavenHome/bin/mvn sonar:sonar "
+        
+    }
+    
+    stage('nexus') {
+        
+        sh " $mavenHome/bin/mvn deploy "
+        
+    }
+    
+    stage('tomcat') {
+        
+        sshagent(['395f0fef-fbe4-4ba6-bcfc-16713d5369b2']) {
+            
+        sh " scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@3.110.55.103:/opt/apache-tomcat-9.0.64/webapps "
+}
+    }
+    
+}
