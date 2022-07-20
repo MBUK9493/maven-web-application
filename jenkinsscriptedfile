@@ -60,6 +60,7 @@ node {
         sh " scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@3.110.55.103:/opt/apache-tomcat-9.0.64/webapps "
 }
  }
+ }
   catch(e){
   currentBuild.result = "FAILED"
   }
